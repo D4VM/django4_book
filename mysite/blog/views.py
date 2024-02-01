@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 
 from .models import Post
+from .forms import EmailPostForm
 
 
 class PostListView(ListView):
@@ -41,3 +42,20 @@ def post_detail(request, year, month, day, post):
         slug=post,
     )
     return render(request, "blog/post/detail.html", {"post": post})
+
+
+def post_share(request, post_id):
+    # Извлечь пост по идентификатору id
+    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
+
+    if request.method == "POST":
+        # Форма была передана на обработку
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            # Поля формы успешно прошли валидацию
+            cd = form.cleaned_data
+            # ... отправить электронное письмо
+    else:
+        form = EmailPostForm()
+
+    return render(request, "blog/post/share.html", {"post": post, "form": form})
