@@ -52,6 +52,7 @@ def post_share(request, post_id):
     sent = False
 
     if request.method == "POST":
+
         # Форма была передана на обработку
         form = EmailPostForm(request.POST)
         if form.is_valid():
